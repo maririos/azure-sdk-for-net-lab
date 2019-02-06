@@ -43,6 +43,8 @@ namespace Azure.ApplicationModel.Configuration
         /// </summary>
         public SettingFields Fields { get; set; } = SettingFields.All;
 
+        public Guid RequestId { get; set; }
+
         public static implicit operator SettingFilter(string label) => new SettingFilter() { Label = label };
 
         #region nobody wants to see these

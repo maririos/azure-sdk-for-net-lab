@@ -89,7 +89,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             var transport = new AddMockTransport(s_testSetting);
             var (service, pool) = CreateTestService(transport);
 
-            ConfigurationSetting setting = await service.AddAsync(setting: s_testSetting, CancellationToken.None);
+            ConfigurationSetting setting = await service.AddAsync(setting: s_testSetting);
 
             AssertEqual(s_testSetting, setting);
             Assert.AreEqual(0, pool.CurrentlyRented);
@@ -101,7 +101,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             var transport = new SetMockTransport(s_testSetting);
             var (service, pool) = CreateTestService(transport);
 
-            ConfigurationSetting setting = await service.SetAsync(s_testSetting, CancellationToken.None);
+            ConfigurationSetting setting = await service.SetAsync(s_testSetting);
 
             AssertEqual(s_testSetting, setting);
             Assert.AreEqual(0, pool.CurrentlyRented);

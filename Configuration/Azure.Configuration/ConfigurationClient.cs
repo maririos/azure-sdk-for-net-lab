@@ -49,7 +49,7 @@ namespace Azure.ApplicationModel.Configuration
         [HttpError(typeof(ResponseFailedException), 412, Message = "matching item is already in the store")]
         [HttpError(typeof(ResponseFailedException), 429, Message = "too many requests")]
         [UsageErrors(typeof(ResponseFailedException), 401, 403, 408, 500, 502, 503, 504)]
-        public async Task<Response<ConfigurationSetting>> AddAsync(ConfigurationSetting setting, CancellationToken cancellation = default)
+        public async Task<Response<ConfigurationSetting>> AddAsync(ConfigurationSetting setting, SettingFilter filter = null, CancellationToken cancellation = default)
         {
             if (setting == null) throw new ArgumentNullException(nameof(setting));
             if (string.IsNullOrEmpty(setting.Key)) throw new ArgumentNullException($"{nameof(setting)}.{nameof(setting.Key)}");
@@ -67,6 +67,7 @@ namespace Azure.ApplicationModel.Configuration
                 message.AddHeader(MediaTypeKeyValueApplicationHeader);
                 message.AddHeader(HttpHeader.Common.JsonContentType);
                 message.AddHeader(HttpHeader.Common.CreateContentLength(content.Length));
+                AddFilterHeaders(filter, message);
                 AddAuthenticationHeaders(message, uri, PipelineMethod.Put, content, _secret, _credential);
 
                 message.SetContent(PipelineContent.Create(content));
@@ -81,7 +82,7 @@ namespace Azure.ApplicationModel.Configuration
             }
         }
 
-        public async Task<Response<ConfigurationSetting>> SetAsync(ConfigurationSetting setting, CancellationToken cancellation = default)
+        public async Task<Response<ConfigurationSetting>> SetAsync(ConfigurationSetting setting, SettingFilter filter = null, CancellationToken cancellation = default)
         {
             if (setting == null) throw new ArgumentNullException(nameof(setting));
             if (string.IsNullOrEmpty(setting.Key)) throw new ArgumentNullException($"{nameof(setting)}.{nameof(setting.Key)}");
@@ -97,6 +98,7 @@ namespace Azure.ApplicationModel.Configuration
                 message.AddHeader(MediaTypeKeyValueApplicationHeader);
                 message.AddHeader(HttpHeader.Common.JsonContentType);
                 message.AddHeader(HttpHeader.Common.CreateContentLength(content.Length));
+                AddFilterHeaders(filter, message);
                 AddAuthenticationHeaders(message, uri, PipelineMethod.Put, content, _secret, _credential);
 
                 message.SetContent(PipelineContent.Create(content));
@@ -247,9 +249,10 @@ namespace Azure.ApplicationModel.Configuration
 
                 message.AddHeader("Host", uri.Host);
                 message.AddHeader(MediaTypeKeyValueApplicationHeader);
-                if (filter.Revision != null) {
+                AddFilterHeaders(filter, message);
+                /*if (filter.Revision != null) {
                     message.AddHeader(AcceptDatetimeHeader, filter.Revision.Value.UtcDateTime.ToString(AcceptDateTimeFormat));
-                }
+                }*/
 
                 AddAuthenticationHeaders(message, uri, PipelineMethod.Get, content: default, _secret, _credential);
 
@@ -273,10 +276,7 @@ namespace Azure.ApplicationModel.Configuration
 
                 message.AddHeader("Host", uri.Host);
                 message.AddHeader(MediaTypeKeyValueApplicationHeader);
-                if (filter.Revision != null) {
-                    message.AddHeader(AcceptDatetimeHeader, filter.Revision.Value.UtcDateTime.ToString(AcceptDateTimeFormat));
-                }
-
+                AddFilterHeaders(filter, message);
                 AddAuthenticationHeaders(message, uri, PipelineMethod.Get, content: default, _secret, _credential);
 
                 await Pipeline.ProcessAsync(message).ConfigureAwait(false);

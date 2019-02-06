@@ -19,6 +19,7 @@ namespace Azure.ApplicationModel.Configuration
         const string MediaTypeProblemApplication = "application/problem+json";
         const string AcceptDateTimeFormat = "ddd, dd MMM yyy HH:mm:ss 'GMT'";
         const string AcceptDatetimeHeader = "Accept-Datetime";
+        const string ClientRequestIdHeader = "x-ms-client-request-id";
         const string KvRoute = "/kv/";
         const string LocksRoute = "/locks/";
         const string RevisionsRoute = "/revisions/";
@@ -36,7 +37,11 @@ namespace Azure.ApplicationModel.Configuration
         // TODO (pri 3): do all the methods that call this accept revisions?
         static void AddFilterHeaders(SettingFilter filter, HttpMessage message)
         {
-            if (filter == null) return;
+            if (filter == null)
+            {
+                message.AddHeader(ClientRequestIdHeader, Guid.NewGuid().ToString());
+                return;
+            }
 
             if (filter.ETag.IfMatch != default) {
                 message.AddHeader(IfMatchName, $"\"{filter.ETag.IfMatch}\"");
@@ -51,6 +56,11 @@ namespace Azure.ApplicationModel.Configuration
                 var dateTime = filter.Revision.Value.UtcDateTime.ToString(AcceptDateTimeFormat);
                 message.AddHeader(AcceptDatetimeHeader, dateTime);
             }
+            if (filter.RequestId == default)
+            {
+                filter.RequestId = Guid.NewGuid();
+            }
+            message.AddHeader(ClientRequestIdHeader, filter.RequestId.ToString());
         }
 
         static async Task<Response<ConfigurationSetting>> CreateResponse(Response response, CancellationToken cancellation)

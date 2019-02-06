@@ -107,8 +107,8 @@ namespace Azure.ApplicationModel.Configuration.Tests
                 // Prepare environment
                 var testSettingDiff = s_testSetting.Clone();
                 testSettingDiff.Label = "test_label_diff";
-                await service.SetAsync(s_testSetting, CancellationToken.None);
-                await service.SetAsync(testSettingDiff, CancellationToken.None);
+                await service.SetAsync(s_testSetting);
+                await service.SetAsync(testSettingDiff);
 
                 // Test
                 await service.DeleteAsync(key: testSettingDiff.Key, filter: testSettingDiff.Label, CancellationToken.None);
@@ -127,7 +127,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             var service = new ConfigurationClient(connectionString);
 
             // Prepare environment
-            await service.SetAsync(s_testSetting, CancellationToken.None);
+            await service.SetAsync(s_testSetting);
 
             // Test
             await service.DeleteAsync(key: s_testSetting.Key, filter: s_testSetting.Label, CancellationToken.None);
@@ -141,7 +141,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             var service = new ConfigurationClient(connectionString);
 
             // Prepare environment
-            await service.SetAsync(s_testSetting, CancellationToken.None);
+            await service.SetAsync(s_testSetting);
 
             // Test
             ConfigurationSetting settting = await service.GetAsync(s_testSetting.Key, s_testSetting.Label, CancellationToken.None);
@@ -163,7 +163,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
 
             try
             {
-                Response<ConfigurationSetting> response = await service.SetAsync(s_testSetting, CancellationToken.None);
+                Response<ConfigurationSetting> response = await service.SetAsync(s_testSetting);
 
                 Assert.True(response.TryGetHeader("ETag", out string etagHeader));
 
@@ -186,7 +186,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
 
             try
             {
-                Response<ConfigurationSetting> response = await service.AddAsync(s_testSetting, CancellationToken.None);
+                Response<ConfigurationSetting> response = await service.AddAsync(s_testSetting);
 
                 Assert.True(response.TryGetHeader("ETag", out string etagHeader));
 
@@ -215,8 +215,8 @@ namespace Azure.ApplicationModel.Configuration.Tests
 
             try
             {
-                await service.SetAsync(s_testSetting, CancellationToken.None);
-                await service.SetAsync(testSettingDiff, CancellationToken.None);
+                await service.SetAsync(s_testSetting);
+                await service.SetAsync(testSettingDiff);
 
                 SettingFilter filter = new SettingFilter()
                 {
@@ -241,7 +241,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             Assert.NotNull(connectionString, "Set AZ_CONFIG_CONNECTION environment variable to the connection string");
             var service = new ConfigurationClient(connectionString);
 
-            await service.SetAsync(s_testSetting, CancellationToken.None);
+            await service.SetAsync(s_testSetting);
             ConfigurationSetting responseGet = await service.GetAsync(s_testSetting.Key, s_testSetting.Label, CancellationToken.None);
 
             var testSettingDiff = responseGet.Clone();
@@ -271,7 +271,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             Assert.NotNull(connectionString, "Set AZ_CONFIG_CONNECTION environment variable to the connection string");
             var service = new ConfigurationClient(connectionString);
 
-            await service.SetAsync(s_testSetting, CancellationToken.None);
+            await service.SetAsync(s_testSetting);
             ConfigurationSetting setting = await service.GetAsync(s_testSetting.Key, s_testSetting.Label, CancellationToken.None);
 
             try
@@ -307,7 +307,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
 
             try
             {
-                await service.SetAsync(s_testSetting, CancellationToken.None);
+                await service.SetAsync(s_testSetting);
 
                 var eTag = "ehHuajgQNq5Qg4ruJVB7hlhX8xs";
                 SettingFilter filter = new SettingFilter()
@@ -336,7 +336,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             Assert.NotNull(connectionString, "Set AZ_CONFIG_CONNECTION environment variable to the connection string");
             var service = new ConfigurationClient(connectionString);
 
-            await service.SetAsync(s_testSetting, CancellationToken.None);
+            await service.SetAsync(s_testSetting);
             ConfigurationSetting responseGet = await service.GetAsync(s_testSetting.Key, s_testSetting.Label, CancellationToken.None);
 
             SettingFilter filter = new SettingFilter()
@@ -376,7 +376,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             Assert.NotNull(connectionString, "Set AZ_CONFIG_CONNECTION environment variable to the connection string");
             var service = new ConfigurationClient(connectionString);
 
-            await service.SetAsync(s_testSetting, CancellationToken.None);
+            await service.SetAsync(s_testSetting);
             ConfigurationSetting setting = await service.GetAsync(s_testSetting.Key, s_testSetting.Label, CancellationToken.None);
             
             try
@@ -417,8 +417,9 @@ namespace Azure.ApplicationModel.Configuration.Tests
 
             try
             {
-                await service.SetAsync(setting, CancellationToken.None);
-                await service.SetAsync(testSettingUpdate, CancellationToken.None);
+                await service.SetAsync(setting);
+                await service.SetAsync(testSettingUpdate);
+                await Task.Delay(1000);
 
                 // Test
                 var filter = new SettingBatchFilter();
@@ -463,7 +464,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             
             try
             {
-                await service.SetAsync(testSettingNoLabel, CancellationToken.None);
+                await service.SetAsync(testSettingNoLabel);
                 // Test
                 Response<ConfigurationSetting> response = await service.GetAsync(key: testSettingNoLabel.Key, filter: default, CancellationToken.None);
 
@@ -509,8 +510,8 @@ namespace Azure.ApplicationModel.Configuration.Tests
             
             try
             {
-                await service.SetAsync(testSettingNoLabel, CancellationToken.None);
-                await service.SetAsync(s_testSetting, CancellationToken.None);
+                await service.SetAsync(testSettingNoLabel);
+                await service.SetAsync(s_testSetting);
 
                 // Test
                 Response<ConfigurationSetting> response = await service.GetAsync(key: s_testSetting.Key, filter: s_testSetting.Label, CancellationToken.None);
@@ -564,7 +565,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
 
             try
             {
-                await service.SetAsync(s_testSetting, CancellationToken.None);
+                await service.SetAsync(s_testSetting);
 
                 SettingBatchFilter filter = new SettingBatchFilter()
                 {
@@ -595,7 +596,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             
             try
             {
-                await service.SetAsync(testSettingNoLabel, CancellationToken.None);
+                await service.SetAsync(testSettingNoLabel);
 
                 ConfigurationSetting setting = await service.GetAsync(testSettingNoLabel.Key, LabelFilters.Null, CancellationToken.None);
                 
@@ -617,7 +618,7 @@ namespace Azure.ApplicationModel.Configuration.Tests
             try
             {
                 // Prepare environment
-                await service.SetAsync(s_testSetting, CancellationToken.None);
+                await service.SetAsync(s_testSetting);
 
                 // Test Lock
                 ConfigurationSetting responseLockSetting = await service.LockAsync(s_testSetting.Key, s_testSetting.Label, CancellationToken.None);
