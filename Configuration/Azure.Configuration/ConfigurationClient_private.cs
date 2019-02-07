@@ -20,6 +20,7 @@ namespace Azure.ApplicationModel.Configuration
         const string AcceptDateTimeFormat = "ddd, dd MMM yyy HH:mm:ss 'GMT'";
         const string AcceptDatetimeHeader = "Accept-Datetime";
         const string ClientRequestIdHeader = "x-ms-client-request-id";
+        const string ActivateClientRequestId = "x-ms-return-client-request-id";
         const string KvRoute = "/kv/";
         const string LocksRoute = "/locks/";
         const string RevisionsRoute = "/revisions/";
@@ -40,6 +41,7 @@ namespace Azure.ApplicationModel.Configuration
             if (filter == null)
             {
                 message.AddHeader(ClientRequestIdHeader, Guid.NewGuid().ToString());
+                message.AddHeader(ActivateClientRequestId, "true");
                 return;
             }
 
@@ -61,6 +63,7 @@ namespace Azure.ApplicationModel.Configuration
                 filter.RequestId = Guid.NewGuid();
             }
             message.AddHeader(ClientRequestIdHeader, filter.RequestId.ToString());
+            message.AddHeader(ActivateClientRequestId, "true");
         }
 
         static async Task<Response<ConfigurationSetting>> CreateResponse(Response response, CancellationToken cancellation)
