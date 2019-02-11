@@ -419,10 +419,9 @@ namespace Azure.ApplicationModel.Configuration.Tests
             {
                 await service.SetAsync(setting);
                 await service.SetAsync(testSettingUpdate);
-                await Task.Delay(1000);
-
+                
                 // Test
-                var filter = new SettingBatchFilter();
+                var filter = new BatchRequestOptions();
                 filter.Key = setting.Key;
                 filter.Revision = DateTimeOffset.MaxValue;
                 SettingBatch batch = await service.GetRevisionsAsync(filter, CancellationToken.None);
